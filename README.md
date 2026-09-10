@@ -182,3 +182,90 @@ justify-content:space-between;
 padding:8px 0;
 border-bottom:1px solid #374151;
 }
+function getValue(id){
+return parseFloat(document.getElementById(id).value) || 0;
+}
+
+function calculate(){
+
+const arrival = getValue("arrival");
+const before = getValue("before");
+const finalFuel = getValue("finalFuel");
+const density = getValue("density");
+
+const left = getValue("leftTank");
+const centre = getValue("centreTank");
+const right = getValue("rightTank");
+
+const fuelUsed = before - arrival;
+
+const conversion =
+density > 0 ? (1 / density) : 0;
+
+const uplift =
+finalFuel - before;
+
+const totalEcam =
+left + centre + right;
+
+const onboard =
+totalEcam - before;
+
+const discrepancy =
+onboard > 0
+? Math.abs(totalEcam - onboard) / onboard * 100
+: 0;
+
+const calcLitres =
+finalFuel * conversion;
+
+document.getElementById("fuelUsed").innerText =
+fuelUsed.toFixed(2);
+
+document.getElementById("conversion").innerText =
+conversion.toFixed(4);
+
+document.getElementById("uplift").innerText =
+uplift.toFixed(2);
+
+document.getElementById("totalEcam").innerText =
+totalEcam.toFixed(2);
+
+document.getElementById("onboard").innerText =
+onboard.toFixed(2);
+
+document.getElementById("discrepancy").innerText =
+discrepancy.toFixed(2) + "%";
+
+document.getElementById("calcLitres").innerText =
+calcLitres.toFixed(2);
+
+saveHistory();
+}
+
+function clearAll(){
+
+document.querySelectorAll("input")
+.forEach(i => i.value = "");
+
+document.querySelectorAll(".row span:last-child")
+.forEach(r => r.innerText = "0");
+}
+
+function saveHistory(){
+
+const record = {
+date:new Date().toLocaleString(),
+ecam:document.getElementById("totalEcam").innerText
+};
+
+let history =
+JSON.parse(localStorage.getItem("fuelHistory") || "[]");
+
+history.unshift(record);
+
+localStorage.setItem(
+"fuelHistory",
+JSON.stringify(history)
+);
+}
